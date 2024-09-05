@@ -1,0 +1,843 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP Website with Footer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background-color: #777;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .video-footer-container {
+            width: 100%;
+            max-width: 600px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .video-container {
+            width: 100%;
+            height: calc(100% - 80px); /* Account for footer height */
+            position: relative;
+            background-color: black;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            pointer-events: none; /* Disable video interactions (un-clickable) */
+        }
+
+        /* Mute/Unmute Button */
+        .unmute-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0); /* No background */
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .unmute-button img {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Footer */
+        .footer {
+            width: 100%;
+            max-width: 600px;
+            height: 80px;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-item {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Remove underline from text links */
+        .footer-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Footer item icons */
+        .footer-item img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+
+        .footer-item span {
+            display: block;
+            font-size: 12px;
+            color: #333;
+        }
+
+        /* Popup Container */
+        .popup-container {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            z-index: 2;
+            text-align: center;
+            animation: slideUp 0.4s ease;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Close Button (Arrow Down) */
+        .close-container {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+
+        .close-container img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Standardized Title Style */
+        .popup-title {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .popup-title img {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        /* Map container */
+        .map-container iframe {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lokasi-button, .calendar-button {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #007bff;
+            padding: 10px;
+            color: #fff;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            width: 99%; /* Set width to 95% of the container */
+            font-weight: bold;
+        }
+
+        .lokasi-button img, .calendar-button img {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .google-btn {
+            background-color: #4CAF50;
+        }
+
+        /* Hubungi contact list styling */
+        .contact-list {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        .contact-text {
+            text-align: left;
+        }
+
+        .contact-text strong {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .contact-text small {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .contact-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .contact-icons a {
+            display: block;
+            background-color: transparent;
+        }
+
+        .contact-icons img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Animation for sliding up */
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container for video and footer -->
+    <div class="video-footer-container">
+        <!-- Video Section -->
+        <div class="video-container">
+            <!-- Mute/Unmute Button -->
+            <button id="unmuteButton" class="unmute-button">
+                <img id="muteIcon" src="https://cdn-icons-png.flaticon.com/128/16105/16105256.png" alt="Mute Icon">
+            </button>
+
+            <!-- Video element with autoplay and muted initially -->
+            <video id="myVideo" autoplay loop muted>
+                <source src="1am 49 without bin binti.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-item">
+                <a href="https://forms.gle/Ph1Zf29Q2w6QLAFW6" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/128/5768/5768397.png" alt="RSVP Icon">
+                    <span>RSVP</span>
+                </a>
+            </div>
+            <div class="footer-item">
+                <a href="javascript:void(0)" id="calendarBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/17000/17000549.png" alt="Calendar Icon">
+                    <span>Kalendar</span>
+                </a>
+            </div>
+            <div class="footer-item">
+                <a href="javascript:void(0)" id="hubungiBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/747/747376.png" alt="Contact Icon">
+                    <span>Hubungi</span>
+                </a>
+            </div>
+            <div class="footer-item">
+                <a href="javascript:void(0)" id="lokasiBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/535/535188.png" alt="Location Icon">
+                    <span>Lokasi</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lokasi Popup Container -->
+    <div id="lokasiContainer" class="popup-container">
+        <div class="close-container" id="closeLokasi">
+            <img src="https://cdn-icons-png.flaticon.com/128/6364/6364586.png" alt="Close Arrow">
+        </div>
+        <!-- Title Container -->
+        <div class="popup-title">
+            <img src="https://cdn-icons-png.flaticon.com/128/535/535188.png" alt="Lokasi Icon">
+            Lokasi
+        </div>
+        
+        <!-- Map Container -->
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1456.719205636843!2d101.66703029194795!3d2.9239236142999725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cd8ac9ebe92857%3A0x7d46189f3cf7d698!2sCyberview%20Resort%20%26%20Spa!5e1!3m2!1sen!2smy!4v1725524948094!5m2!1sen!2smy" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <a href="https://ul.waze.com/ul?ll=2.92391503%2C101.66735172&navigate=yes&zoom=17&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" class="lokasi-button" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/3771/3771649.png" alt="Waze Icon">
+                Waze
+            </a>
+            <a href="https://maps.app.goo.gl/SKHUQ9jFKrCRFDPs7" class="lokasi-button google-btn" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/2335/2335353.png" alt="Google Map Icon">
+                Google Map
+            </a>
+        </div>
+    </div>
+
+    <!-- Kalendar Popup Container -->
+    <div id="kalendarContainer" class="popup-container">
+        <div class="close-container" id="closeKalendar">
+            <img src="https://cdn-icons-png.flaticon.com/128/6364/6364586.png" alt="Close Arrow">
+        </div>
+        <!-- Title Container -->
+        <div class="popup-title">
+            <img src="https://cdn-icons-png.flaticon.com/128/17000/17000549.png" alt="Kalendar Icon">
+            Kalendar
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <a href="https://calendar.app.google/7HVgCCmjmHVaBtx68" class="calendar-button google-btn" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/5968/5968499.png" alt="Google Calendar Icon">
+                Google Calendar
+            </a>
+        </div>
+    </div>
+
+    <!-- Hubungi Popup Container -->
+    <div id="hubungiContainer" class="popup-container">
+        <div class="close-container" id="closeHubungi">
+            <img src="https://cdn-icons-png.flaticon.com/128/6364/6364586.png" alt="Close Arrow">
+        </div>
+        <!-- Title Container -->
+        <div class="popup-title">
+            <img src="https://cdn-icons-png.flaticon.com/128/747/747376.png" alt="Contact Icon">
+            Hubungi
+        </div>
+
+        <!-- Contact List -->
+        <div class="contact-list">
+            <div class="contact-text">
+                <strong>Ibu</strong><br>
+                <small>Ibu Pengantin Perempuan</small>
+            </div>
+            <div class="contact-icons">
+                <a href="tel:+60123456789">
+                    <img src="https://cdn-icons-png.flaticon.com/128/483/483947.png" alt="Call Icon">
+                </a>
+                <a href="https://wa.me/60123456789" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/128/15707/15707820.png" alt="WhatsApp Icon">
+                </a>
+            </div>
+        </div>
+        <div class="contact-list">
+            <div class="contact-text">
+                <strong>Bapa</strong><br>
+                <small>Bapa Pengantin Perempuan</small>
+            </div>
+            <div class="contact-icons">
+                <a href="tel:+60198765432">
+                    <img src="https://cdn-icons-png.flaticon.com/128/483/483947.png" alt="Call Icon">
+                </a>
+                <a href="https://wa.me/60198765432" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/128/15707/15707820.png" alt="WhatsApp Icon">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Unmuting and Modals -->
+    <script>
+        const video = document.getElementById("myVideo");
+        const unmuteButton = document.getElementById("unmuteButton");
+        const muteIcon = document.getElementById("muteIcon");
+
+        // Unmute video when button is clicked and change the icon
+        unmuteButton.addEventListener("click", () => {
+            if (video.muted) {
+                video.muted = false;
+                muteIcon.src = "https://cdn-icons-png.flaticon.com/128/10313/10313096.png"; // Unmute Icon
+            } else {
+                video.muted = true;
+                muteIcon.src = "https://cdn-icons-png.flaticon.com/128/16105/16105256.png"; // Mute Icon
+            }
+        });
+
+        // Function to handle popups
+        function handlePopup(buttonId, popupId, closeId) {
+            const button = document.getElementById(buttonId);
+            const popup = document.getElementById(popupId);
+            const closeBtn = document.getElementById(closeId);
+
+            button.addEventListener("click", () => {
+                popup.style.display = "block";  // Show the popup
+            });
+
+            closeBtn.addEventListener("click", () => {
+                popup.style.display = "none";   // Hide the popup
+            });
+        }
+
+        // Apply the function to each popup
+        handlePopup("lokasiBtn", "lokasiContainer", "closeLokasi");
+        handlePopup("calendarBtn", "kalendarContainer", "closeKalendar");
+        handlePopup("hubungiBtn", "hubungiContainer", "closeHubungi");
+
+    </script>
+
+</body>
+</html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP Website with Footer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background-color: #777;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .video-footer-container {
+            width: 100%;
+            max-width: 600px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .video-container {
+            width: 100%;
+            height: calc(100% - 80px); /* Account for footer height */
+            position: relative;
+            background-color: black;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            pointer-events: none; /* Disable video interactions (un-clickable) */
+        }
+
+        /* Mute/Unmute Button */
+        .unmute-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0); /* No background */
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .unmute-button img {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Footer */
+        .footer {
+            width: 100%;
+            max-width: 600px;
+            height: 80px;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-item {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Remove underline from text links */
+        .footer-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Footer item icons */
+        .footer-item img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+
+        .footer-item span {
+            display: block;
+            font-size: 12px;
+            color: #333;
+        }
+
+        /* Popup Container */
+        .popup-container {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            z-index: 2;
+            text-align: center;
+            animation: slideUp 0.4s ease;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Close Button (Arrow Down) */
+        .close-container {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+
+        .close-container img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Standardized Title Style */
+        .popup-title {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .popup-title img {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        /* Map container */
+        .map-container iframe {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lokasi-button, .calendar-button {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #007bff;
+            padding: 10px;
+            color: #fff;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            width: 99%; /* Set width to 95% of the container */
+            font-weight: bold;
+        }
+
+        .lokasi-button img, .calendar-button img {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .google-btn {
+            background-color: #4CAF50;
+        }
+
+        /* Hubungi contact list styling */
+        .contact-list {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        .contact-text {
+            text-align: left;
+        }
+
+        .contact-text strong {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .contact-text small {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .contact-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .contact-icons a {
+            display: block;
+            background-color: transparent;
+        }
+
+        .contact-icons img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Animation for sliding up */
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container for video and footer -->
+    <div class="video-footer-container">
+        <!-- Video Section -->
+        <div class="video-container">
+            <!-- Mute/Unmute Button -->
+            <button id="unmuteButton" class="unmute-button">
+                <img id="muteIcon" src="https://cdn-icons-png.flaticon.com/128/16105/16105256.png" alt="Mute Icon">
+            </button>
+
+            <!-- Video element with autoplay and muted initially -->
+            <video id="myVideo" autoplay loop muted>
+                <source src="1am 49 without bin binti.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-item">
+                <a href="https://forms.gle/Ph1Zf29Q2w6QLAFW6" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/128/5768/5768397.png" alt="RSVP Icon">
+                    <span>RSVP</span>
+                </a>
+            </div>
+            <div class="footer-item">
+                <a href="javascript:void(0)" id="calendarBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/17000/17000549.png" alt="Calendar Icon">
+                    <span>Kalendar</span>
+                </a>
+            </div>
+            <div class="footer-item">
+                <a href="javascript:void(0)" id="hubungiBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/747/747376.png" alt="Contact Icon">
+                    <span>Hubungi</span>
+                </a>
+            </div>
+            <div class="footer-item">
+                <a href="javascript:void(0)" id="lokasiBtn">
+                    <img src="https://cdn-icons-png.flaticon.com/128/535/535188.png" alt="Location Icon">
+                    <span>Lokasi</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lokasi Popup Container -->
+    <div id="lokasiContainer" class="popup-container">
+        <div class="close-container" id="closeLokasi">
+            <img src="https://cdn-icons-png.flaticon.com/128/6364/6364586.png" alt="Close Arrow">
+        </div>
+        <!-- Title Container -->
+        <div class="popup-title">
+            <img src="https://cdn-icons-png.flaticon.com/128/535/535188.png" alt="Lokasi Icon">
+            Lokasi
+        </div>
+        
+        <!-- Map Container -->
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1456.719205636843!2d101.66703029194795!3d2.9239236142999725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cd8ac9ebe92857%3A0x7d46189f3cf7d698!2sCyberview%20Resort%20%26%20Spa!5e1!3m2!1sen!2smy!4v1725524948094!5m2!1sen!2smy" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <a href="https://ul.waze.com/ul?ll=2.92391503%2C101.66735172&navigate=yes&zoom=17&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" class="lokasi-button" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/3771/3771649.png" alt="Waze Icon">
+                Waze
+            </a>
+            <a href="https://maps.app.goo.gl/SKHUQ9jFKrCRFDPs7" class="lokasi-button google-btn" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/2335/2335353.png" alt="Google Map Icon">
+                Google Map
+            </a>
+        </div>
+    </div>
+
+    <!-- Kalendar Popup Container -->
+    <div id="kalendarContainer" class="popup-container">
+        <div class="close-container" id="closeKalendar">
+            <img src="https://cdn-icons-png.flaticon.com/128/6364/6364586.png" alt="Close Arrow">
+        </div>
+        <!-- Title Container -->
+        <div class="popup-title">
+            <img src="https://cdn-icons-png.flaticon.com/128/17000/17000549.png" alt="Kalendar Icon">
+            Kalendar
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <a href="https://calendar.app.google/7HVgCCmjmHVaBtx68" class="calendar-button google-btn" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/5968/5968499.png" alt="Google Calendar Icon">
+                Google Calendar
+            </a>
+        </div>
+    </div>
+
+    <!-- Hubungi Popup Container -->
+    <div id="hubungiContainer" class="popup-container">
+        <div class="close-container" id="closeHubungi">
+            <img src="https://cdn-icons-png.flaticon.com/128/6364/6364586.png" alt="Close Arrow">
+        </div>
+        <!-- Title Container -->
+        <div class="popup-title">
+            <img src="https://cdn-icons-png.flaticon.com/128/747/747376.png" alt="Contact Icon">
+            Hubungi
+        </div>
+
+        <!-- Contact List -->
+        <div class="contact-list">
+            <div class="contact-text">
+                <strong>Ibu</strong><br>
+                <small>Ibu Pengantin Perempuan</small>
+            </div>
+            <div class="contact-icons">
+                <a href="tel:+60123456789">
+                    <img src="https://cdn-icons-png.flaticon.com/128/483/483947.png" alt="Call Icon">
+                </a>
+                <a href="https://wa.me/60123456789" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/128/15707/15707820.png" alt="WhatsApp Icon">
+                </a>
+            </div>
+        </div>
+        <div class="contact-list">
+            <div class="contact-text">
+                <strong>Bapa</strong><br>
+                <small>Bapa Pengantin Perempuan</small>
+            </div>
+            <div class="contact-icons">
+                <a href="tel:+60198765432">
+                    <img src="https://cdn-icons-png.flaticon.com/128/483/483947.png" alt="Call Icon">
+                </a>
+                <a href="https://wa.me/60198765432" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/128/15707/15707820.png" alt="WhatsApp Icon">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Unmuting and Modals -->
+    <script>
+        const video = document.getElementById("myVideo");
+        const unmuteButton = document.getElementById("unmuteButton");
+        const muteIcon = document.getElementById("muteIcon");
+
+        // Unmute video when button is clicked and change the icon
+        unmuteButton.addEventListener("click", () => {
+            if (video.muted) {
+                video.muted = false;
+                muteIcon.src = "https://cdn-icons-png.flaticon.com/128/10313/10313096.png"; // Unmute Icon
+            } else {
+                video.muted = true;
+                muteIcon.src = "https://cdn-icons-png.flaticon.com/128/16105/16105256.png"; // Mute Icon
+            }
+        });
+
+        // Function to handle popups
+        function handlePopup(buttonId, popupId, closeId) {
+            const button = document.getElementById(buttonId);
+            const popup = document.getElementById(popupId);
+            const closeBtn = document.getElementById(closeId);
+
+            button.addEventListener("click", () => {
+                popup.style.display = "block";  // Show the popup
+            });
+
+            closeBtn.addEventListener("click", () => {
+                popup.style.display = "none";   // Hide the popup
+            });
+        }
+
+        // Apply the function to each popup
+        handlePopup("lokasiBtn", "lokasiContainer", "closeLokasi");
+        handlePopup("calendarBtn", "kalendarContainer", "closeKalendar");
+        handlePopup("hubungiBtn", "hubungiContainer", "closeHubungi");
+
+    </script>
+
+</body>
+</html>
+>>>>>>> 4b333ce097d3182c03daa7da0380c24ed66fcb4d
